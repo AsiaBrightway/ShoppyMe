@@ -130,7 +130,7 @@ class UserController extends Controller
                                     'phone_number' => $user->phone_number,
                                     'created_at' => $user->created_at,
                                     'access_token' => $accessToken,
-                                    'refresh_token' =>  hash('sha256', $token)
+                                    'refresh_token' =>  $token
                                 ]
                             ], 201); // Use 201 for successful resource creation
             }
@@ -232,7 +232,7 @@ class UserController extends Controller
                                 'phone_number' => $user->phone_number,
                                 'created_at' => $user->created_at,
                                 'access_token' => $accessToken,
-                                'refresh_token' =>  hash('sha256', $token)
+                                'refresh_token' => $token
 
                             ]
                         ], 201); // Use 201 for successful resource creation
