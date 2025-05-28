@@ -103,7 +103,7 @@ class UserController extends Controller
 
             if (!$user ) {
                             $user = User::create([
-                                'email' => 'email',
+                                'email' => $request->phone_number,
                                 'phone_number' => $request->phone_number,
                                 'password' => "password",
                                 'email_verified_at' => now(),
@@ -135,43 +135,36 @@ class UserController extends Controller
                             ], 201); // Use 201 for successful resource creation
             }
             else{
-                          $user = User::where('phone_number', $request->number)->first();
         
-        // Check if admin exists and the password matches
-        if (!$user) {
-            throw ValidationException::withMessages([
-                'message' => ['Invalid credentials.'],
-            ]);
-        }
 
-        // Delete old tokens for this admin
-        $user->tokens()->delete();
+                    // Delete old tokens for this admin
+                    $user->tokens()->delete();
 
-        // Generate access token (valid for 1 hour)
-        $accessToken = $user->createToken('access_token', ['*'])->plainTextToken;
+                    // Generate access token (valid for 1 hour)
+                    $accessToken = $user->createToken('access_token', ['*'])->plainTextToken;
 
-        // Generate refresh token (valid for 7 days)
-        $token = Str::uuid()->toString();
-        $refreshToken = Str::random(60);
-        UserRefreshToken::create([
-            'user_id' => $user->user_id,
-            'token' => hash('sha256', $token), // Store the hashed token
-            'expires_at' => now()->addDays(7),
-        ]);
+                    // Generate refresh token (valid for 7 days)
+                    $token = Str::uuid()->toString();
+                    $refreshToken = Str::random(60);
+                    UserRefreshToken::create([
+                        'user_id' => $user->user_id,
+                        'token' => hash('sha256', $token), // Store the hashed token
+                        'expires_at' => now()->addDays(7),
+                    ]);
 
-        // Return response with tokens and admin details
-        return response()->json([
-            'message' => 'Login successful',
-            'access_token' => $accessToken,
-            'refresh_token' => $token,
-            'token_type' => 'Bearer',
-            'expires_in' => 3600, // Access token expiration (1 hour)
-            'admin' => [
-                'user_id' => $user->user_id,
-                'email' => $user->email,
-                'phone_number' => $user->phone_number
-            ],
-        ], 200);
+                    // Return response with tokens and admin details
+                    return response()->json([
+                        'message' => 'Login successful',
+                        'access_token' => $accessToken,
+                        'refresh_token' => $token,
+                        'token_type' => 'Bearer',
+                        'expires_in' => 3600, // Access token expiration (1 hour)
+                        'admin' => [
+                            'user_id' => $user->user_id,
+                            'email' => $user->email,
+                            'phone_number' => $user->phone_number
+                        ],
+                    ], 200);
             }
 
 

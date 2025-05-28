@@ -33,17 +33,24 @@ Route::post('/admin/refresh-token', [AdminAuthController::class, 'refreshToken']
 Route::apiResource('stores', StoreController::class);
 Route::apiResource('admins', AdminController::class);
 
+//Slider Route
+Route::get('/sliders', [SliderController::class, 'index']);
+Route::get('/subCategories', [SubCategoryController::class, 'index']);
+
 //All Pages Access For Users
 // Route::get('/colors', [ColorController::class, 'index']); // Get Active floors
 // Protect all routes with authentication
 Route::middleware('auth:sanctum')->group(function () {
+
+
     Route::apiResource('colors', ColorController::class);
     Route::apiResource('sizes', SizeController::class);
     Route::apiResource('brands', BrandController::class);
     Route::apiResource('categories', CategoryController::class);
-    Route::apiResource('subCategories', SubCategoryController::class);
+    Route::apiResource('subCategories', SubCategoryController::class)->only(['destroy', 'store', 'show', 'update']);;
     Route::apiResource('products', ProductController::class);
-    Route::apiResource('sliders', SliderController::class);
+    Route::apiResource('sliders', ColorController::class)->only(['destroy', 'store', 'show', 'update']);
+    // Route::apiResource('sliders', SliderController::class);
     Route::apiResource('cities', CityController::class);
     Route::apiResource('townships', TownshipController::class);
     Route::apiResource('deliverycharges', DeliveryChargesController::class);
